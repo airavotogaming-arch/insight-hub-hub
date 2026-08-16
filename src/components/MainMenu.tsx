@@ -222,7 +222,11 @@ export default function MainMenu({
         {/* ---------------- right ---------------- */}
         <aside className="mm-col mm-right">
           <section className="mm-panel mm-panel-red">
-            <h2 className="mm-panel-title">NEXT REWARD</h2>
+            <h2 className="mm-panel-title">
+              NEXT REWARD
+              <Link to="/rewards" className="mm-panel-more">ALL ›</Link>
+            </h2>
+
             <img
               className={`mm-gift ${reward?.ready ? "is-ready" : ""}`}
               src={giftImg}
