@@ -10,12 +10,32 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AchievementsRouteImport } from './routes/achievements'
+import { Route as CollectionRouteImport } from './routes/collection'
+import { Route as DailyRouteImport } from './routes/daily'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as SpinRouteImport } from './routes/spin'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AchievementsRoute = AchievementsRouteImport.update({
+  id: '/achievements',
+  path: '/achievements',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectionRoute = CollectionRouteImport.update({
+  id: '/collection',
+  path: '/collection',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DailyRoute = DailyRouteImport.update({
+  id: '/daily',
+  path: '/daily',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -23,40 +43,95 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RewardsRoute = RewardsRouteImport.update({
+  id: '/rewards',
+  path: '/rewards',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SpinRoute = SpinRouteImport.update({
+  id: '/spin',
+  path: '/spin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/achievements': typeof AchievementsRoute
+  '/collection': typeof CollectionRoute
+  '/daily': typeof DailyRoute
   '/profile': typeof ProfileRoute
+  '/rewards': typeof RewardsRoute
   '/shop': typeof ShopRoute
+  '/spin': typeof SpinRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/achievements': typeof AchievementsRoute
+  '/collection': typeof CollectionRoute
+  '/daily': typeof DailyRoute
   '/profile': typeof ProfileRoute
+  '/rewards': typeof RewardsRoute
   '/shop': typeof ShopRoute
+  '/spin': typeof SpinRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/achievements': typeof AchievementsRoute
+  '/collection': typeof CollectionRoute
+  '/daily': typeof DailyRoute
   '/profile': typeof ProfileRoute
+  '/rewards': typeof RewardsRoute
   '/shop': typeof ShopRoute
+  '/spin': typeof SpinRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/profile' | '/shop'
+  fullPaths:
+    | '/'
+    | '/achievements'
+    | '/collection'
+    | '/daily'
+    | '/profile'
+    | '/rewards'
+    | '/shop'
+    | '/spin'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/profile' | '/shop'
-  id: '__root__' | '/' | '/profile' | '/shop'
+  to:
+    | '/'
+    | '/achievements'
+    | '/collection'
+    | '/daily'
+    | '/profile'
+    | '/rewards'
+    | '/shop'
+    | '/spin'
+  id:
+    | '__root__'
+    | '/'
+    | '/achievements'
+    | '/collection'
+    | '/daily'
+    | '/profile'
+    | '/rewards'
+    | '/shop'
+    | '/spin'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AchievementsRoute: typeof AchievementsRoute
+  CollectionRoute: typeof CollectionRoute
+  DailyRoute: typeof DailyRoute
   ProfileRoute: typeof ProfileRoute
+  RewardsRoute: typeof RewardsRoute
   ShopRoute: typeof ShopRoute
+  SpinRoute: typeof SpinRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -68,11 +143,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/achievements': {
+      id: '/achievements'
+      path: '/achievements'
+      fullPath: '/achievements'
+      preLoaderRoute: typeof AchievementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collection': {
+      id: '/collection'
+      path: '/collection'
+      fullPath: '/collection'
+      preLoaderRoute: typeof CollectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/daily': {
+      id: '/daily'
+      path: '/daily'
+      fullPath: '/daily'
+      preLoaderRoute: typeof DailyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rewards': {
+      id: '/rewards'
+      path: '/rewards'
+      fullPath: '/rewards'
+      preLoaderRoute: typeof RewardsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shop': {
@@ -82,13 +185,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/spin': {
+      id: '/spin'
+      path: '/spin'
+      fullPath: '/spin'
+      preLoaderRoute: typeof SpinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AchievementsRoute: AchievementsRoute,
+  CollectionRoute: CollectionRoute,
+  DailyRoute: DailyRoute,
   ProfileRoute: ProfileRoute,
+  RewardsRoute: RewardsRoute,
   ShopRoute: ShopRoute,
+  SpinRoute: SpinRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,6 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { GAMES_PER_REWARD, claimReward, getRewardState, type RewardState } from "@/game/rewards";
+import { getDailyState, type DailyState } from "@/game/daily";
+import { getSpinState } from "@/game/spin";
+import { getAchievements, type AchievementRow } from "@/game/achievements";
+
 import JoyBlasterLogo from "@/components/JoyBlasterLogo";
 import menuBg from "@/assets/menu-bg.png";
 import blasterImg from "@/assets/menu-blaster.png";
@@ -50,11 +54,27 @@ export default function MainMenu({
 }: MainMenuProps) {
   const [reward, setReward] = useState<RewardState | null>(null);
   const [rewardNote, setRewardNote] = useState("");
+  const [dailyReady, setDailyReady] = useState(false);
+  const [spinReady, setSpinReady] = useState(false);
+  const [missions, setMissions] = useState<AchievementRow[]>([]);
+  const [daily, setDaily] = useState<DailyState | null>(null);
 
   // read progress on mount and whenever the coin balance changes (i.e. after a round)
   useEffect(() => {
     setReward(getRewardState());
+    const d = getDailyState();
+    setDaily(d);
+    setDailyReady(d.canClaim);
+    setSpinReady(getSpinState().freeAvailable);
+    const rows = getAchievements();
+    setMissions(
+      [...rows]
+        .filter((a) => !a.claimed)
+        .sort((a, b) => (b.claimable ? 1 : 0) - (a.claimable ? 1 : 0) || b.pct - a.pct)
+        .slice(0, 3),
+    );
   }, [bank, best]);
+
 
   const openBox = useCallback(() => {
     const res = claimReward();
@@ -121,19 +141,22 @@ export default function MainMenu({
         </div>
 
         <div className="mm-top-actions">
-          <button className="mm-icon-btn" onClick={onShop}>
+          <Link to="/daily" className="mm-icon-btn">
             <span className="mm-icon-glyph">🎁</span>
             <span>DAILY GIFT</span>
-          </button>
-          <button className="mm-icon-btn" onClick={onHelp}>
+            {dailyReady && <span className="mm-dot" aria-label="Gift ready" />}
+          </Link>
+          <Link to="/spin" className="mm-icon-btn">
             <span className="mm-icon-glyph">🎡</span>
             <span>LUCKY SPIN</span>
-          </button>
+            {spinReady && <span className="mm-dot" aria-label="Free spin ready" />}
+          </Link>
           <button className="mm-icon-btn" onClick={onSettings}>
             <span className="mm-icon-glyph">⚙️</span>
             <span>SETTINGS</span>
           </button>
         </div>
+
       </header>
 
       {/* ---------------- body ---------------- */}
@@ -153,46 +176,56 @@ export default function MainMenu({
             <h2 className="mm-ribbon">DAILY CHALLENGE</h2>
             <div className="mm-challenge">
               <div className="mm-challenge-main">
-                <span className="mm-challenge-text">Break 50 Toys</span>
+                <span className="mm-challenge-text">
+                  {daily?.canClaim ? `Day ${daily.day} gift is ready` : "Gift claimed — come back tomorrow"}
+                </span>
                 <div className="mm-progress-row">
-                  <Bar value={32} max={50} tone="cyan" />
-                  <span className="mm-progress-text">32/50</span>
+                  <Bar value={daily?.streak ?? 0} max={7} tone="cyan" />
+                  <span className="mm-progress-text">{(daily?.streak ?? 0) % 7}/7</span>
                 </div>
               </div>
-              <div className="mm-reward">
-                <span className="mm-res-icon gem">💎</span>
-                <span className="mm-reward-x">x10</span>
-              </div>
+              <Link to="/daily" className="mm-reward" aria-label="Open daily gift">
+                <span className="mm-res-icon coin">🪙</span>
+                <span className="mm-reward-x">{(daily?.amount ?? 0).toLocaleString()}</span>
+              </Link>
             </div>
           </section>
 
           <section className="mm-panel mm-panel-blue">
             <h2 className="mm-panel-title">MISSIONS</h2>
             <ul className="mm-missions">
-              {[
-                { icon: "⭐", label: "Play 3 Games", v: 2, m: 3, txt: "2/3" },
-                { icon: "🔥", label: "Get 5 Combos", v: 3, m: 5, txt: "3/5" },
-                { icon: "🎯", label: "Score 20000 Points", v: 15000, m: 20000, txt: "15000/20000" },
-              ].map((m) => (
-                <li key={m.label} className="mm-mission">
+              {missions.length === 0 && (
+                <li className="mm-mission">
+                  <span className="mm-mission-icon">🏆</span>
+                  <div className="mm-mission-body">
+                    <span className="mm-mission-label">All badges claimed!</span>
+                  </div>
+                </li>
+              )}
+              {missions.map((m) => (
+                <li key={m.id} className="mm-mission">
                   <span className="mm-mission-icon">{m.icon}</span>
                   <div className="mm-mission-body">
-                    <span className="mm-mission-label">{m.label}</span>
+                    <span className="mm-mission-label">{m.blurb}</span>
                     <div className="mm-progress-row">
-                      <Bar value={m.v} max={m.m} tone="cyan" />
-                      <span className="mm-progress-text">{m.txt}</span>
+                      <Bar value={m.progress} max={m.target} tone="cyan" />
+                      <span className="mm-progress-text">
+                        {(m.format ?? String)(m.progress)}/{(m.format ?? String)(m.target)}
+                      </span>
                     </div>
                   </div>
                   <span className="mm-mission-reward">
-                    <span className="mm-res-icon coin">🪙</span>500
+                    <span className="mm-res-icon coin">🪙</span>
+                    {m.reward.toLocaleString()}
                   </span>
                 </li>
               ))}
             </ul>
-            <button className="mm-view-all" onClick={onInstructions}>
+            <Link to="/achievements" className="mm-view-all">
               VIEW ALL
-            </button>
+            </Link>
           </section>
+
         </aside>
 
         {/* ---------------- center ---------------- */}
@@ -222,7 +255,11 @@ export default function MainMenu({
         {/* ---------------- right ---------------- */}
         <aside className="mm-col mm-right">
           <section className="mm-panel mm-panel-red">
-            <h2 className="mm-panel-title">NEXT REWARD</h2>
+            <h2 className="mm-panel-title">
+              NEXT REWARD
+              <Link to="/rewards" className="mm-panel-more">ALL ›</Link>
+            </h2>
+
             <img
               className={`mm-gift ${reward?.ready ? "is-ready" : ""}`}
               src={giftImg}
@@ -286,13 +323,20 @@ export default function MainMenu({
         <button className="mm-nav" onClick={onShop}>
           <span>🛒</span> PRIZE SHOP
         </button>
-        <button className="mm-nav" onClick={onInstructions}>
+        <Link to="/achievements" className="mm-nav">
           <span>🏅</span> ACHIEVEMENTS
+        </Link>
+        <Link to="/collection" className="mm-nav">
+          <span>🎒</span> COLLECTION
+        </Link>
+        <button className="mm-nav" onClick={onInstructions}>
+          <span>📖</span> HOW TO PLAY
         </button>
         <button className="mm-nav" onClick={onTutorial ?? onHelp}>
-          <span>🎁</span> COLLECTION
+          <span>🎓</span> TUTORIAL
         </button>
       </nav>
+
 
       <p className="mm-credit">made by ujwal guru</p>
     </div>
