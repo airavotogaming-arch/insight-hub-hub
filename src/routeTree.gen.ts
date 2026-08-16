@@ -14,6 +14,7 @@ import { Route as AchievementsRouteImport } from './routes/achievements'
 import { Route as DailyRouteImport } from './routes/daily'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as SpinRouteImport } from './routes/spin'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const ShopRoute = ShopRouteImport.update({
   path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SpinRoute = SpinRouteImport.update({
+  id: '/spin',
+  path: '/spin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/daily': typeof DailyRoute
   '/profile': typeof ProfileRoute
   '/shop': typeof ShopRoute
+  '/spin': typeof SpinRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/daily': typeof DailyRoute
   '/profile': typeof ProfileRoute
   '/shop': typeof ShopRoute
+  '/spin': typeof SpinRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,21 @@ export interface FileRoutesById {
   '/daily': typeof DailyRoute
   '/profile': typeof ProfileRoute
   '/shop': typeof ShopRoute
+  '/spin': typeof SpinRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/achievements' | '/daily' | '/profile' | '/shop'
+  fullPaths: '/' | '/achievements' | '/daily' | '/profile' | '/shop' | '/spin'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/achievements' | '/daily' | '/profile' | '/shop'
-  id: '__root__' | '/' | '/achievements' | '/daily' | '/profile' | '/shop'
+  to: '/' | '/achievements' | '/daily' | '/profile' | '/shop' | '/spin'
+  id:
+    | '__root__'
+    | '/'
+    | '/achievements'
+    | '/daily'
+    | '/profile'
+    | '/shop'
+    | '/spin'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +93,7 @@ export interface RootRouteChildren {
   DailyRoute: typeof DailyRoute
   ProfileRoute: typeof ProfileRoute
   ShopRoute: typeof ShopRoute
+  SpinRoute: typeof SpinRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +133,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/spin': {
+      id: '/spin'
+      path: '/spin'
+      fullPath: '/spin'
+      preLoaderRoute: typeof SpinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +149,7 @@ const rootRouteChildren: RootRouteChildren = {
   DailyRoute: DailyRoute,
   ProfileRoute: ProfileRoute,
   ShopRoute: ShopRoute,
+  SpinRoute: SpinRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
