@@ -50,11 +50,27 @@ export default function MainMenu({
 }: MainMenuProps) {
   const [reward, setReward] = useState<RewardState | null>(null);
   const [rewardNote, setRewardNote] = useState("");
+  const [dailyReady, setDailyReady] = useState(false);
+  const [spinReady, setSpinReady] = useState(false);
+  const [missions, setMissions] = useState<AchievementRow[]>([]);
+  const [daily, setDaily] = useState<DailyState | null>(null);
 
   // read progress on mount and whenever the coin balance changes (i.e. after a round)
   useEffect(() => {
     setReward(getRewardState());
+    const d = getDailyState();
+    setDaily(d);
+    setDailyReady(d.canClaim);
+    setSpinReady(getSpinState().freeAvailable);
+    const rows = getAchievements();
+    setMissions(
+      [...rows]
+        .filter((a) => !a.claimed)
+        .sort((a, b) => (b.claimable ? 1 : 0) - (a.claimable ? 1 : 0) || b.pct - a.pct)
+        .slice(0, 3),
+    );
   }, [bank, best]);
+
 
   const openBox = useCallback(() => {
     const res = claimReward();
