@@ -286,13 +286,20 @@ export default function MainMenu({
         <button className="mm-nav" onClick={onShop}>
           <span>🛒</span> PRIZE SHOP
         </button>
-        <button className="mm-nav" onClick={onInstructions}>
+        <Link to="/achievements" className="mm-nav">
           <span>🏅</span> ACHIEVEMENTS
+        </Link>
+        <Link to="/collection" className="mm-nav">
+          <span>🎒</span> COLLECTION
+        </Link>
+        <button className="mm-nav" onClick={onInstructions}>
+          <span>📖</span> HOW TO PLAY
         </button>
         <button className="mm-nav" onClick={onTutorial ?? onHelp}>
-          <span>🎁</span> COLLECTION
+          <span>🎓</span> TUTORIAL
         </button>
       </nav>
+
 
       <p className="mm-credit">made by ujwal guru</p>
     </div>
