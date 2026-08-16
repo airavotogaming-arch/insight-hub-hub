@@ -121,19 +121,22 @@ export default function MainMenu({
         </div>
 
         <div className="mm-top-actions">
-          <button className="mm-icon-btn" onClick={onShop}>
+          <Link to="/daily" className="mm-icon-btn">
             <span className="mm-icon-glyph">🎁</span>
             <span>DAILY GIFT</span>
-          </button>
-          <button className="mm-icon-btn" onClick={onHelp}>
+            {dailyReady && <span className="mm-dot" aria-label="Gift ready" />}
+          </Link>
+          <Link to="/spin" className="mm-icon-btn">
             <span className="mm-icon-glyph">🎡</span>
             <span>LUCKY SPIN</span>
-          </button>
+            {spinReady && <span className="mm-dot" aria-label="Free spin ready" />}
+          </Link>
           <button className="mm-icon-btn" onClick={onSettings}>
             <span className="mm-icon-glyph">⚙️</span>
             <span>SETTINGS</span>
           </button>
         </div>
+
       </header>
 
       {/* ---------------- body ---------------- */}
