@@ -1,24 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
+import ShootingGallery from "@/components/ShootingGallery";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Toy Blitz Carnival — 3D Shooting Gallery Game" },
+      {
+        name: "description",
+        content:
+          "Play Toy Blitz Carnival, a 3D shooting gallery: aim a toy blaster, knock down plush toys, hit golden gifts for jackpots and win tickets.",
+      },
+      { property: "og:title", content: "Toy Blitz Carnival — 3D Shooting Gallery Game" },
+      {
+        property: "og:description",
+        content:
+          "First-person fairground blaster game with moving toy targets, combos, tickets and prize unlocks.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main>
+      <h1 className="sr-only">Toy Blitz Carnival — 3D Shooting Gallery Arcade Game</h1>
+      <ShootingGallery />
+    </main>
   );
 }

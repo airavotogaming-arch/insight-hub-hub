@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { initPlaygama } from "../lib/playgama";
 
 function NotFoundComponent() {
   return (
@@ -76,23 +77,41 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      {
+        name: "viewport",
+        content:
+          "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover",
+      },
+      { title: "Toy Blitz Carnival — 3D Shooting Gallery Arcade" },
+      {
+        name: "description",
+        content:
+          "A fast 3D carnival shooting gallery: blast plush toys, build combos and win tickets for the prize shop.",
+      },
+      { property: "og:title", content: "Toy Blitz Carnival — 3D Shooting Gallery Arcade" },
+      {
+        property: "og:description",
+        content: "Blast plush toys, build combos and win tickets in this 3D carnival arcade game.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap",
+      },
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
+    // Platform requirement: the Playgama Bridge SDK must be present in index.html
+    // so the portal can detect it before the game boots.
+    scripts: [{ src: "https://bridge.playgama.com/v2/stable/playgama-bridge.js" }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -116,6 +135,13 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  // Kick off Playgama Bridge initialization at startup so the platform receives
+  // the init signal well within its 30s window, before the game finishes loading.
+  useEffect(() => {
+    void initPlaygama();
+  }, []);
+
 
   return (
     <QueryClientProvider client={queryClient}>
