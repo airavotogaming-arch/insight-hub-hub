@@ -176,46 +176,56 @@ export default function MainMenu({
             <h2 className="mm-ribbon">DAILY CHALLENGE</h2>
             <div className="mm-challenge">
               <div className="mm-challenge-main">
-                <span className="mm-challenge-text">Break 50 Toys</span>
+                <span className="mm-challenge-text">
+                  {daily?.canClaim ? `Day ${daily.day} gift is ready` : "Gift claimed — come back tomorrow"}
+                </span>
                 <div className="mm-progress-row">
-                  <Bar value={32} max={50} tone="cyan" />
-                  <span className="mm-progress-text">32/50</span>
+                  <Bar value={daily?.streak ?? 0} max={7} tone="cyan" />
+                  <span className="mm-progress-text">{(daily?.streak ?? 0) % 7}/7</span>
                 </div>
               </div>
-              <div className="mm-reward">
-                <span className="mm-res-icon gem">💎</span>
-                <span className="mm-reward-x">x10</span>
-              </div>
+              <Link to="/daily" className="mm-reward" aria-label="Open daily gift">
+                <span className="mm-res-icon coin">🪙</span>
+                <span className="mm-reward-x">{(daily?.amount ?? 0).toLocaleString()}</span>
+              </Link>
             </div>
           </section>
 
           <section className="mm-panel mm-panel-blue">
             <h2 className="mm-panel-title">MISSIONS</h2>
             <ul className="mm-missions">
-              {[
-                { icon: "⭐", label: "Play 3 Games", v: 2, m: 3, txt: "2/3" },
-                { icon: "🔥", label: "Get 5 Combos", v: 3, m: 5, txt: "3/5" },
-                { icon: "🎯", label: "Score 20000 Points", v: 15000, m: 20000, txt: "15000/20000" },
-              ].map((m) => (
-                <li key={m.label} className="mm-mission">
+              {missions.length === 0 && (
+                <li className="mm-mission">
+                  <span className="mm-mission-icon">🏆</span>
+                  <div className="mm-mission-body">
+                    <span className="mm-mission-label">All badges claimed!</span>
+                  </div>
+                </li>
+              )}
+              {missions.map((m) => (
+                <li key={m.id} className="mm-mission">
                   <span className="mm-mission-icon">{m.icon}</span>
                   <div className="mm-mission-body">
-                    <span className="mm-mission-label">{m.label}</span>
+                    <span className="mm-mission-label">{m.blurb}</span>
                     <div className="mm-progress-row">
-                      <Bar value={m.v} max={m.m} tone="cyan" />
-                      <span className="mm-progress-text">{m.txt}</span>
+                      <Bar value={m.progress} max={m.target} tone="cyan" />
+                      <span className="mm-progress-text">
+                        {(m.format ?? String)(m.progress)}/{(m.format ?? String)(m.target)}
+                      </span>
                     </div>
                   </div>
                   <span className="mm-mission-reward">
-                    <span className="mm-res-icon coin">🪙</span>500
+                    <span className="mm-res-icon coin">🪙</span>
+                    {m.reward.toLocaleString()}
                   </span>
                 </li>
               ))}
             </ul>
-            <button className="mm-view-all" onClick={onInstructions}>
+            <Link to="/achievements" className="mm-view-all">
               VIEW ALL
-            </button>
+            </Link>
           </section>
+
         </aside>
 
         {/* ---------------- center ---------------- */}
