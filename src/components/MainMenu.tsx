@@ -1,6 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { GAMES_PER_REWARD, claimReward, getRewardState, type RewardState } from "@/game/rewards";
+import { getDailyState, type DailyState } from "@/game/daily";
+import { getSpinState } from "@/game/spin";
+import { getAchievements, type AchievementRow } from "@/game/achievements";
+
 import JoyBlasterLogo from "@/components/JoyBlasterLogo";
 import menuBg from "@/assets/menu-bg.png";
 import blasterImg from "@/assets/menu-blaster.png";
